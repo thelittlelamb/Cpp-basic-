@@ -1,2 +1,2 @@
 # Cpp-basic-
-We learn the cpp from the scratch.
+A simple C++ learning record, recording some Cpp common syntax.
