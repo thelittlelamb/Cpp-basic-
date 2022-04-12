@@ -1,0 +1,300 @@
+# 5 字符串
+
+## 字符串与整数
+
+字符串是计算机与人类沟通的重要手段
+
+英文字符与数字的对应关系ASCII表，每个常用字符都对应一个$-128 \sim 127$的数字，二者之间可以相互转化
+
+```c++
+int main(){
+    for (int i = 1; i < 128; i ++) printf("%d:%c\n",i, char(i));    
+    return 0;
+}
+```
+
+需要记住的48 - > 0；65 -> A, 97 -> a，往后面依次+1
+
+字符可以参与运算，运算时会将其当做整数：`int a = 'A' - 'Z'`, `char = 'A' + 2`char事实上存的是一个整数，只有输出的时候是一个字符（给人看的）
+
+1. **输入一行字符，统计出其中数字字符的个数，以及字母字符的个数**
+
+```C++
+int main(){
+    char c;
+    int nums = 0, chars = 0;
+    while(cin >> c){
+        //知识点在于可以直接c>='0',字符之间可以直接比较，比较的时候被当成数字
+        if (c >= '0' && c <= '9') nums ++;
+        if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') chars ++;
+    }
+    printf("nums:%d\nchars:%d",nums,chars);
+    return 0;
+}
+```
+
+## 字符数组
+
+字符串就是字符数组加上结束符`'\0'`,这个表示空字符
+
+```c++
+int main(){
+    char a[] = {'C','+','+'}; //字符数组
+    char b[] = {'C','+','+','\0'}; //字符数组（长度为4），也可以视为字符串（长度为3）
+    char c[] = "C++"; //与b[]是等价的，c[4]
+    
+    //输出
+    cout << a << endl;
+    printf("%s\n",b);
+    return 0;
+}
+```
+
+* 后面补充：为什么说字符串是个指针
+
+```c++
+int main(){
+    //输入
+    char s[100];
+    scanf("%s",s); //不需要&s,&表示取地址符号，但是字符串本身就是指针
+    return 0;
+}
+```
+
+```c++
+int main(){
+    char str[100];
+    cin >> str; // 输入字符串时，遇到空格或者回车就会停止,输入`abc def`，只会输出`abc`
+    cout << str << endl; // 输出字符串时，遇到空格或者回车不会停止，遇到'\0'时停止
+    
+    //读入一行到一个字符数组里面
+    fgets(str, 100, stdin); //str定义的字符数组名字，100最多读入的字符个数，stdin记住就行了
+    //fgets会把回车也读进来
+    
+    //读入一行到一个字符串里面
+    string s;
+    getline(cin, s);
+    
+    printf("%s\n", str);
+    puts(s); //等价于上面那个，包括了换行符
+    return 0;
+}
+```
+
+字符数组中常用的几个函数
+
+```C++
+int main(){
+    char s1[] = "C++";
+    char s2[] = "Python";
+    char s3[100];
+    
+    cout << strlen(s1) << endl; //输出字符串的长度，不包含\0
+    cout << strlen(s2) << endl;
+    
+    cout << strcmp(s1,s2) << endl; //比较两个字符数组，字典序比较，a < b返回-1， a == b返回0，a > b返回1
+    cout << strcpy(s3,s2) << endl; //后一个复制给前一个
+    return 0;
+}
+```
+
+2. **输出只出现一次的字符**
+
+```C++
+int count[26];
+char str[100010]; //放到函数外面，堆空间
+
+int main(){
+    cin >> str;
+    int len = strlen(str);
+    for (int i = 0; i < len; i ++) count[str[i]-'a'] ++; //这一步的操作比较细节
+    //另一种写法 for (int i = 0; str[i]; i ++) 第二个是判断条件的，一个字符串的最后一个是\0,就是false
+    //再遍历一遍，输出第一个只出现一次的，为什么还要遍历len,因为count[i]=1不代表它是第一个出现一次的
+    for (int i = 0; i < len; i ++){
+        if (count[str[i]-'a'] == 1){
+            cout << str[i] << endl;
+            return 0; //遇到return 0; 函数就停止了，后面不会再执行了
+        }
+    }
+    puts("no");
+    return 0;
+}
+```
+
+## string
+
+实际中很少采用字符数组，而是直接用string，可变长的字符序列
+
+* 定义和初始化
+
+```C++
+int main(){
+    string s1; //默认，空字符串
+    string s2 = s1; //s2为s1的副本，只是值相同，但是不指向同一段地址
+    string s3 = "C++"; //s3是该字符串字面值的副本
+    string s4(10,'c'); //"cccccccccc"
+    return 0;
+}
+```
+
+* `string`上的操作
+
+```C++
+int main(){
+    // 读写
+    string s1,s2;
+    cin >> s1 >> s2; //不可以用scanf读入，cin只会读到空格，如果有空格会停止
+    getline(cin, s1); //读入一整行，空格也可以读
+    cout << s1 << s2 << endl;
+    printf("%s",s1.c_str()); //不能直接printf出来string,需要s1.c_str()
+    return 0;
+}
+```
+
+```C++
+int main(){
+    string s1;
+    cout << s1.empty() << endl; //返回布尔值，判断string是不是空的
+    cout << s1.size() << endl; //返回长度，复杂度O(1),不需要遍历，里面存了长度
+    return 0;
+}
+```
+
+`string`支持`>, <, ==, !=`等比较运算符，按照字典序进行比较
+
+`string`相加：
+
+```C++
+int main(){
+    string s1 = "hello, ", s2 = "world\n";
+    string s3 = s1 + s2;  // s3的内容是 hello, world\n
+    s1 += s2;  // s1 = s1 + s2
+    cout << s3 << endl;
+    return 0;
+}
+```
+
+```c++
+//字符串相加的一些细节：做加法运算的时候，字面值和字符都会变成string对象，相加就是串联
+//string," ",' '混用的时候，必须保证加法运算符两边各有一个对象是string
+string s1 = s1 + ","; //可以
+string s2 = "Hello" + ","; //不可以
+string s3 = "hello" + ", " + s2; //不可以，加法从左到右进行
+```
+
+处理string对象中的字符
+
+```C++
+int main(){
+    string s  = "Hello, world";
+    for (int i = 0; i < s.size(); i ++) cout << s[i] << endl; //当作字符数组操作
+    
+    for (char c : s) cout << c << endl; //注意这里的char c是s[i]的副本，修改c不会修改s
+    for (auto c : s) cout << c << endl; //auto编译器自己去猜变量是什么类型
+        c = 'a'; //没有用
+        
+    for (char &c : s) c = 'a'; // &取地址
+    cout << s << endl; //会修改s的值
+    
+    return 0;
+}
+```
+
+3. **密码加密**
+
+```c++
+int main(){
+    string str;
+    getline(cin, str);
+    
+    for (char &c : str){
+        if (c >= 'a' && c <= 'z') c = 'a' + (c - 'a' + 1) % 26; //使用偏移量
+        else if (c >= 'A' && c <= 'Z') c = 'A' + (c - 'A' + 1) % 26;
+    }
+    cout << str << endl;
+    return 0;
+}
+```
+
+4. **循环相克令**：挖掘一些更本质的东西
+
+```c++
+int main(){
+    int n;
+    cin >> n;
+    
+    while(n--){
+        string a, b;
+        cin >> a >> b;
+        
+        int x, y;
+        if (a == "Hunter") x = 0;
+        else if ( a == "Bear") x = 1;
+        else x = 2;
+        
+        if ( b == "Hunter") y = 0;
+        else if ( b == "Bear") y = 1;
+        else y = 2;
+        
+        if (x == y) cout << "Tie" << endl;
+        else if (x == (y + 1) % 3) cout << "Player1" << endl;
+        else cout << "Player2" << endl;
+    }
+    return 0;
+}
+```
+
+5. **`stringstream`用法**
+
+   字符串流的默认分隔符为空格
+
+```c++
+#include <iostream>
+#include <string>
+#include <sstream> //加入这个头文件
+using namespace std;
+
+int main(){
+    string s, a, b;
+    getline(cin, s);
+    cin >> a >> b;
+    
+    stringstream ssin(s); //参考的cin的输入，不会读入空格,abd efx是两个输入
+    //就是说shid shdij shid,用了这个用法，就类似123 537 236用cin的输入
+    string str;
+    while(ssin >> str){
+        if (str == a) cout << b << ' ';
+        else cout << str << ' ';
+    }
+    return 0;
+}
+```
+
+6. **双指针初探，第一类双指针**
+
+```c++
+#include <iostream>
+#include <string>
+#include <cstdio>
+using namespace std;
+
+int main(){
+    int n; 
+    cin >> n;
+    while(n--){
+        string s; 
+        cin >> s;
+        char c; int count = 0;
+        for (int i = 0; i < (int)s.size() ; i ++){
+            int j = i;
+            while (j < (int)s.size() && s[j] == s[i]) j ++;
+            if ( j - i > count){
+                count = j - i; c = s[i];
+            }
+            i = j - 1;
+        }
+        cout << c << ' ' << count << endl;
+    }
+    return 0;
+}
+```
