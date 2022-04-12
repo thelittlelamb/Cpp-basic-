@@ -1,0 +1,75 @@
+# 7 类，结构体
+
+这里只涉及最简单的类和结构体的知识，继承，多态等等不会涉及
+
+## class
+
+* 定义
+
+```c++
+class Person{
+    private: //私有，只有类内部可以访问
+        int age, height;
+        double money;
+        string book[100];
+    public: //公有，外部也可以访问
+        string name;
+        
+        void say(){
+            cout << "I'm" << name << endl;
+        }
+        
+        int get_age(){
+            return age;
+        }
+        
+        void add_money(double x){
+            money += x;
+        }
+}; // C++定义类后面一定要有; 不要忘了
+```
+
+* 使用（接上面的内容）
+
+```C++
+int main(){
+    Person c; //定义了对象c
+    c.name = "xhl";      // 正确！访问公有变量
+    c.age = 18;          // 错误！访问私有变量
+    c.add_money(100);
+    c.say();
+    cout << c.get_age() << endl;
+    
+    return 0;
+}
+```
+
+## struct
+
+与类完全是一样的，只有一个区别：类默认是`private`，结构体默认是`public`
+
+一半在写短代码的时候会用到，内容非常复杂的就写到类里面
+
+* 构造函数（类里面也可以有）
+
+```C++
+struct Person{
+    int age, height;
+    double money;
+    //可以在函数内部将person几个变量赋值
+    Person(int _age, int _height, double _money){
+        age = _age;
+        height = _height;
+        money = _money;
+    } //构造函数函数名与类名相同
+    
+    //构造函数另一种写法：当只是为了赋值，然后这个运行会比上面的快一点
+    Person(int _age, int _height, double _money): age(_age), height(_height), money(_money) {}
+}; //不要忘记
+
+int main(){
+    Person c(18, 180, 10000.0); //有了这个可以传入参数，重写，顺次写入
+    cout << c.money << endl;
+    return 0;
+}
+```
