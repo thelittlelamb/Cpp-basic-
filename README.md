@@ -1,2 +1,2 @@
 # Cpp-basic-
-A simple C++ learning record, recording some Cpp common syntax.
+A subset of c++ syntax that contains some of the syntax required by the algorithm
